@@ -39,3 +39,27 @@ resource "google_monitoring_monitored_project" "projects_monitored" {
     google_project_service.project_monitor_api
   ]
 }
+
+# bind service account to the each monitored project with Compute View role
+resource "google_project_iam_binding" "monitored_project" {
+  for_each = setunion(local.metric_scopes, [var.scoping_project_id])
+  project  = each.value
+  role     = "roles/compute.viewer"
+  members  = [
+   "serviceAccount:${var.service_account}",
+  ]
+
+  depends_on = [
+    google_monitoring_monitored_project.projects_monitored
+  ]
+}
+
+# enable compute engine api
+resource "google_project_service" "project_compute_engine_api" {
+  for_each = setunion(local.metric_scopes, [var.scoping_project_id])
+  project = each.value
+  service  = "compute.googleapis.com"
+  depends_on = [
+    google_monitoring_monitored_project.projects_monitored
+  ]
+}
