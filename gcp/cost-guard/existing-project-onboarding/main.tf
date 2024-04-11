@@ -1,5 +1,5 @@
 data "google_projects" "org_projects" {
-  filter="lifecycleState:ACTIVE"
+  filter = "${var.projects_filter}"
 }
 
 locals {

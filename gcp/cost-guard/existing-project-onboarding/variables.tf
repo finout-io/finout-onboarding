@@ -19,3 +19,9 @@ variable "monitored_projects" {
   description =  "monitored projects to add to the scoping project"
   default     = []
 }
+
+variable "projects_filter" {
+  type        = string
+  description = "A string filter as defined in the GCP REST API"
+  default     = "lifecycleState:ACTIVE"
+}
